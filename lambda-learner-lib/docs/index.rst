@@ -1,0 +1,16 @@
+Welcome to lambda-learner-lib's documentation!
+=====================================================================
+
+Lambda Learner core library
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
