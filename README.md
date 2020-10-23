@@ -71,4 +71,4 @@ mean_dict, var_dict = index_domain_coeffs_to_nt_domain_coeffs(updated_model, ind
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
-This project is licensed under the BSD 2-CLAUSE LICENSE - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the BSD 2-CLAUSE LICENSE - see the [LICENSE](LICENSE) file for details.
