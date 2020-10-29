@@ -33,14 +33,17 @@ FEATURE_TERM = "term"
 FEATURE_VALUE = "value"
 
 
-def read_ntv_records_from_json(data_path=MOCK_NTV_DATASET_PATH):
+def read_ntv_records_from_json(num_examples: int = -1, data_path=MOCK_NTV_DATASET_PATH):
     """
     Read records from a file with one ntv json-formatted record per line.
     :param data_path: path to file
     :return: records
     """
     with open(data_path, "rb") as file:
-        records = [json.loads(line) for line in file]
+        if num_examples > 0:
+            records = [json.loads(next(file)) for _ in range(num_examples)]
+        else:
+            records = [json.loads(line) for line in file]
     return records
 
 

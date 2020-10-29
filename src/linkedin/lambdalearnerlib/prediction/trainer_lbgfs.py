@@ -11,7 +11,7 @@ from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
 from linkedin.lambdalearnerlib.utils.functions import sparse_diag_matrix
 
 from .hessian_type import HessianType
-from .trainer import Trainer
+from .trainer import Trainer, with_previous_theta_transform_memoized
 
 
 class TrainerLBGFS(Trainer):
@@ -60,8 +60,12 @@ class TrainerLBGFS(Trainer):
         lambda_vector = self.param_reg * np.ones(training_data.num_cols)
         self.param_lambda = sparse_diag_matrix(lambda_vector)
 
-    def _affine_transform(self, theta: np.ndarray) -> np.ndarray:
-        return self.data.y * (self.data.X * theta + self.data.offsets)
+    @with_previous_theta_transform_memoized
+    def _exp_affine(self, theta):
+        """
+        Computes a term used in the loss, gradient and hessian update, caching the previous result.
+        """
+        return np.exp(-self.data.y * (self.data.X * theta + self.data.offsets))
 
     def _estimate_hessian(self, theta: np.ndarray) -> sparse.spmatrix:
         """
@@ -69,7 +73,7 @@ class TrainerLBGFS(Trainer):
         :param theta: coefficient vector that is output from l-bfgs
         :return: hessian diagonal vector
         """
-        score = 1.0 / (1 + np.exp(-self._affine_transform(theta)))
+        score = 1.0 / (1 + self._exp_affine(theta))
         D = sparse_diag_matrix(score * (1 - score))
         X = self.data.X
         full_hessian = X.T * D * X

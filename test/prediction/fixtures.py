@@ -9,8 +9,8 @@ from linkedin.lambdalearnerlib.ds.representation_utils import nt_domain_data_to_
 from linkedin.lambdalearnerlib.utils.functions import sparse_diag_matrix
 
 
-def generate_mock_training_data():
-    raw_data = [from_offline_training_example_avro(_) for _ in read_ntv_records_from_json()]
+def generate_mock_training_data(num_examples: int = -1):
+    raw_data = [from_offline_training_example_avro(_) for _ in read_ntv_records_from_json(num_examples)]
     imap, _ = IndexMap.from_records_means_and_variances(raw_data, [], [])
     indexed_data = nt_domain_data_to_index_domain_data(raw_data, imap)
     return indexed_data, imap

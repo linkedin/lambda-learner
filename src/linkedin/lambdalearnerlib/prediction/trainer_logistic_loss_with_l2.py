@@ -30,13 +30,13 @@ class TrainerLogisticLossWithL2(TrainerLBGFS):
 
     def loss(self, theta: np.ndarray) -> float:
         penalty = theta.dot(theta) * self.param_reg / 2.0
-        log_likelihood = -(self.data.w * np.log(np.exp(-self._affine_transform(theta)) + 1)).sum() - penalty
+        log_likelihood = -(self.data.w * np.log(self._exp_affine(theta) + 1)).sum() - penalty
         return -log_likelihood
 
     def gradient(self, theta: np.ndarray) -> np.ndarray:
         penalty_prime = theta * self.param_reg
         numerator = sparse.diags(self.data.y * self.data.w, 0) * self.data.X
-        denominator = np.exp(self._affine_transform(theta)) + 1
+        denominator = 1 / self._exp_affine(theta) + 1
         log_likelihood_prime = np.asarray((sparse.diags(1.0 / denominator, 0) * numerator).sum(axis=0)).squeeze() - penalty_prime
         return -log_likelihood_prime
 

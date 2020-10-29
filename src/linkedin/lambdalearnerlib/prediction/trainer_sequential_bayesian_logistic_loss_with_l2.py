@@ -35,7 +35,7 @@ class TrainerSequentialBayesianLogisticLossWithL2(TrainerLBGFS):
 
     def loss(self, theta: np.ndarray) -> float:
         penalty = theta.dot(theta) * self.param_reg * (1 - self.param_delta) / 2.0
-        log_likelihood = -(self.data.w * np.log(np.exp(-self._affine_transform(theta)) + 1)).sum() - penalty
+        log_likelihood = -(self.data.w * np.log(self._exp_affine(theta) + 1)).sum() - penalty
         deviation = theta - self.initial_model.theta
         # Beware: M * v and M.dot(v) are identical in implementation here...
         product = self.initial_model.hessian * deviation
@@ -45,7 +45,7 @@ class TrainerSequentialBayesianLogisticLossWithL2(TrainerLBGFS):
 
     def gradient(self, theta: np.ndarray) -> np.ndarray:
         penalty_prime = theta * self.param_reg * (1 - self.param_delta)
-        denominator = np.exp(self._affine_transform(theta)) + 1
+        denominator = 1 / self._exp_affine(theta) + 1
         log_likelihood_prime = ((self.data.y * self.data.w / denominator) * self.data.X) - penalty_prime
         deviation = theta - self.initial_model.theta
         past_gradient = self.initial_model.hessian * deviation * self.param_delta

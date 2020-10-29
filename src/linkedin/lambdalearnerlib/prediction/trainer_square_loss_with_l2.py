@@ -5,6 +5,7 @@ from linkedin.lambdalearnerlib.ds.indexed_dataset import IndexedDataset
 from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
 
 from .hessian_type import HessianType
+from .trainer import with_previous_theta_transform_memoized
 from .trainer_lbgfs import TrainerLBGFS
 
 
@@ -28,11 +29,18 @@ class TrainerSquareLossWithL2(TrainerLBGFS):
         """
         super().__init__(training_data=training_data, initial_model=initial_model, hessian_type=hessian_type, penalty=penalty)
 
+    @with_previous_theta_transform_memoized
+    def _residuals(self, theta: np.array) -> np.ndarray:
+        """
+        Computes residuals, caching the previous result. These are used in both the loss and gradient computation.
+        """
+        return self.data.X * theta + self.data.offsets - self.data.y
+
     def loss(self, theta: np.ndarray) -> float:
         """
         loss = 1/2 sum(Xθ + offset - y)^2 + 1/2 λθᵀθ
         """
-        residuals = self.data.X * theta + self.data.offsets - self.data.y
+        residuals = self._residuals(theta)
         prediction_error = 0.5 * residuals.dot(residuals)
         penalty = 0.5 * self.param_reg * theta.dot(theta)
         return prediction_error + penalty
@@ -53,9 +61,8 @@ class TrainerSquareLossWithL2(TrainerLBGFS):
         Therefore:
         gradient = Xᵀ(Xθ + offset - y) + λθ
         """
-        # TODO ktalanin - would be great to reuse residuals instead of computing them again, if we can do that.
-        #               - might be hard to do nicely though (e.g. preserve idempotence).
-        grad_prediction_error = self.data.X.T * (self.data.X * theta + self.data.offsets - self.data.y)
+        residuals = self._residuals(theta)
+        grad_prediction_error = self.data.X.T * residuals
         grad_penalty = self.param_reg * theta
         return grad_prediction_error + grad_penalty
 
