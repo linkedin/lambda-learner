@@ -24,6 +24,8 @@ Tips for Getting Your Pull Request Accepted
 3. Open an issue first and seek advice for your change before submitting
    a pull request. Large features which have never been discussed are
    unlikely to be accepted. **You have been warned.**
+4. Make sure to run `isort` and `mypy` on the `src` and `test` directories, and
+   fix any lint warnings.
 
 [disclosure_guidelines]: https://www.linkedin.com/help/linkedin/answer/62924
 [pubkey]: https://www.linkedin.com/help/linkedin/answer/79676
