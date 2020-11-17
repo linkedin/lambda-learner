@@ -3,6 +3,11 @@ from scipy import sparse
 
 
 class IndexedDataset:
+    """A dataset represented in the index domain.
+
+    This is the internal representation of a dataset used during optimization.
+    """
+
     def __init__(self, data: sparse.spmatrix, labels: np.ndarray, labels_weights: np.ndarray, offsets: np.ndarray):
         self.X = data
         self.y = labels

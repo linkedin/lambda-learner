@@ -6,7 +6,10 @@ RELATIVE_PRECISION = 10e-6
 
 
 def sequences_almost_equal(a, b, rel_precision: float = RELATIVE_PRECISION):
-    """Test helper for asserting that two sequences are uniformly pointwise different by at most a given factor."""
+    """Test whether two sequences are uniformly pointwise different by at most a given factor.
+
+    This is a test helper intended to be used with [[assertTrue]] in a [[unittest.TestCase]]
+    """
     a_ndarray = np.array(a)
     b_ndarray = np.array(b)
     zero_adjustment = ((b_ndarray == 0) + 0) * (rel_precision / 1000)
@@ -14,6 +17,9 @@ def sequences_almost_equal(a, b, rel_precision: float = RELATIVE_PRECISION):
 
 
 def matrices_almost_equal(a, b, rel_precision: float = RELATIVE_PRECISION):
-    """Test helper for asserting that two matrices are uniformly pointwise different by at most a given factor."""
+    """Test whether two matrices are uniformly pointwise different by at most a given factor.
+
+    This is a test helper intended to be used with [[assertTrue]] in a [[unittest.TestCase]]
+    """
     zero_adjustment = ((b == 0) + 0) * (rel_precision / 1000)
     return all((np.array(abs(1 - (a + zero_adjustment) / (b + zero_adjustment)) < rel_precision)).flatten())

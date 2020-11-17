@@ -6,27 +6,18 @@ import numpy as np
 from scipy import sparse
 from scipy.optimize import fmin_l_bfgs_b
 
-from linkedin.lambdalearnerlib.ds.indexed_dataset import IndexedDataset
-from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
-from linkedin.lambdalearnerlib.utils.functions import sparse_diag_matrix
+from linkedin.learner.ds.indexed_dataset import IndexedDataset
+from linkedin.learner.ds.indexed_model import IndexedModel
+from linkedin.learner.utils.functions import sparse_diag_matrix
 
 from .hessian_type import HessianType
 from .trainer import Trainer, with_previous_theta_transform_memoized
 
 
 class TrainerLBGFS(Trainer):
-    """
-    Implementation of a Model with converters to product numpy data structure for the training data
+    """An trainer using LBGFS optimization and supporting coefficient Hessian update.
 
-    Example Usage (of a subclass):
-
-    lr_trainer = TrainerSequentialBayesianLogisticLossWithL2(
-        training_data=training_data,
-        initial_model=initial_model,
-        penalty=10.0,
-        delta=0.8)
-
-    updated_model, trained_loss, training_metadata = lr_trainer.train()
+    This is an abstract trainer and must be sub-classed.
     """
 
     def __init__(
@@ -37,10 +28,12 @@ class TrainerLBGFS(Trainer):
         hessian_type: HessianType = HessianType.FULL,
         penalty: float = 0.0,
     ):
-        """
-        Instantiate a Trainer, for a given dataset and model. Settings and hyperparams include:
-        :param hessian_type - How precise should the hessian update be?
-        :param penalty - Regularization penalty hyper-parameter.
+        """Instantiate a Trainer, for a given dataset and model.
+
+        :param training_data: An indexed dataset to train the model on.
+        :param initial_model: The model to be trained.
+        :param hessian_type: How precise should the Hessian update be?
+        :param penalty: Regularization penalty hyper-parameter.
         """
         super().__init__()
 
@@ -62,16 +55,21 @@ class TrainerLBGFS(Trainer):
 
     @with_previous_theta_transform_memoized
     def _exp_affine(self, theta):
-        """
-        Computes a term used in the loss, gradient and hessian update, caching the previous result.
+        """Compute a term used in the loss, gradient, and Hessian update.
+
+        The most recent result is cached for efficiency, so that when LBGFS calls
+        loss and gradient computations for a single point consecutively, this
+        term can be reused.
         """
         return np.exp(-self.data.y * (self.data.X * theta + self.data.offsets))
 
     def _estimate_hessian(self, theta: np.ndarray) -> sparse.spmatrix:
-        """
-        Estimate posterior variances; we assume X is binary, and we care only about diagonal entries
-        :param theta: coefficient vector that is output from l-bfgs
-        :return: hessian diagonal vector
+        """Estimate posterior variances.
+
+        We assume X is binary, and we care only about diagonal entries.
+
+        :param theta: coefficient vector that is output from l-bfgs.
+        :return: The Hessian diagonal vector.
         """
         score = 1.0 / (1 + self._exp_affine(theta))
         D = sparse_diag_matrix(score * (1 - score))
@@ -81,18 +79,20 @@ class TrainerLBGFS(Trainer):
 
     @abstractmethod
     def _update_full_hessian(self, new_theta: np.array) -> sparse.spmatrix:
-        """
-        Will be used by `train` method to update the hessian after training
-        :param new_theta - new value of theta after training
-        :return: hessian
+        """Update the posterior Hessian value.
+
+        Used by `train` method to update the Hessian after training.
+
+        :param new_theta: new value of theta after training.
+        :return: The updated Hessian.
         """
         raise NotImplementedError
 
     def _update_hessian(self, new_theta: np.array) -> sparse.spmatrix:
-        """
-        Update the hessian given the value to hessian_type.
-        :param new_theta - The post-training model coefficient vector.
-        :return The updated hessian.
+        """Update the Hessian given the value of hessian_type.
+
+        :param new_theta: The post-training model coefficient vector.
+        :return: The updated Hessian.
         """
         if self.hessian_type == HessianType.NONE:
             hessian = None
@@ -116,11 +116,13 @@ class TrainerLBGFS(Trainer):
         precision: float = 1e7,
         gradient_tolerance: float = 1e-5,
     ) -> Tuple[IndexedModel, float, Dict[str, Any]]:
-        """
-        Minimizes the loss function using LBFGS, and updates the hessian estimate. See fmin_l_bfgs_b for
-        documentation of the params. Default values are the fmin_l_bfgs_b defaults.
+        """Optimize the model coefficients and update the coefficient variances.
 
-        :return: Tuple of means vector, hessian matrix, and training metadata returned by fmin_l_bfgs_b trainer.
+        Minimizes the loss function using LBFGS, and updates the hessian estimate.
+        See fmin_l_bfgs_b for documentation of the params. Default values are the
+        fmin_l_bfgs_b defaults.
+
+        :return: Coefficient vector and Hessian matrix, posterior loss, and training metadata.
         """
 
         # Minimize a function func using the L-BFGS-B algorithm.

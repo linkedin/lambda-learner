@@ -1,21 +1,24 @@
 import unittest
 
 import numpy as np
-
-from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
-from linkedin.lambdalearnerlib.prediction.evaluator import evaluate
-from linkedin.lambdalearnerlib.prediction.hessian_type import HessianType
-from linkedin.lambdalearnerlib.prediction.linear_scorer import score_linear_model
-from linkedin.lambdalearnerlib.prediction.trainer_logistic_loss_with_l2 import TrainerLogisticLossWithL2
 from prediction.fixtures import generate_mock_training_data, simple_mock_data
-from test_utils import PLACES_PRECISION, matrices_almost_equal, sequences_almost_equal
+from test_utils import (PLACES_PRECISION, matrices_almost_equal,
+                        sequences_almost_equal)
+
+from linkedin.learner.ds.indexed_model import IndexedModel
+from linkedin.learner.prediction.evaluator import evaluate
+from linkedin.learner.prediction.hessian_type import HessianType
+from linkedin.learner.prediction.linear_scorer import score_linear_model
+from linkedin.learner.prediction.trainer_logistic_loss_with_l2 import \
+    TrainerLogisticLossWithL2
 
 
 class TrainerLogisticLossWithL2Test(unittest.TestCase):
     def test_lr_loss_and_gradient(self):
-        """
-        The expected values in this test are set using this implementation, so this is a test against regression,
-        rather than strictly a test of correctness.
+        """Test the loss and gradient functions.
+
+        The expected values in this test are set using this implementation, so this
+        is a test against regression, rather than strictly a test of correctness.
         """
         indexed_data, _ = generate_mock_training_data()
 
@@ -49,7 +52,7 @@ class TrainerLogisticLossWithL2Test(unittest.TestCase):
                     0.04935191200563128,
                     0.04935191200563128,
                     -0.0028160881457262527,
-                    -0.0028160881457262527
+                    -0.0028160881457262527,
                 ],
             ),
             "Expect theta after optimization is correct.",
@@ -77,10 +80,11 @@ class TrainerLogisticLossWithL2Test(unittest.TestCase):
         )
 
     def test_lr_update_hessian(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test the Hessian update."""
+        indexed_data, model = simple_mock_data()
 
         lr = TrainerLogisticLossWithL2(training_data=indexed_data, initial_model=model, penalty=10, hessian_type=HessianType.FULL)
-        hessian = lr._update_full_hessian(theta)
+        hessian = lr._update_full_hessian(model.theta)
 
         expected_hessian = np.array(
             [

@@ -6,32 +6,30 @@ import numpy as np
 class Trainer(ABC):
     @abstractmethod
     def __init__(self):
-        """
-        Initialize model parameters
-        """
+        """Initialize model parameters."""
         pass
 
     @abstractmethod
     def loss(self, theta):
-        """
-        Compute the loss for a batch using the error function and sample weights
-        :return: float
+        """Compute the loss.
+
+        :return: The value of the loss at `theta`.
         """
         raise NotImplementedError
 
     @abstractmethod
     def gradient(self, theta):
-        """
-        Compute the derivative of the loss function used for gradient descent
-        :return: float
+        """Compute the derivative of the loss.
+
+        :return: The value of the loss gradient at `theta`.
         """
         raise NotImplementedError
 
     @abstractmethod
     def train(self, num_corrections: int, precision: float, max_iterations: int):
-        """
-        Runs a few iterations of gradient descent to compute the new model coefficients
-        :return: coefficient vectors
+        """Optimize the model coefficients.
+
+        :return: Optimized coefficient vector.
         """
         raise NotImplementedError
 
@@ -42,16 +40,18 @@ VALUE = "value"
 
 
 def with_previous_theta_transform_memoized(func):
-    """
-    Decorator for a Trainer method of the form `func(self, theta)`, which memoizes the result of
-    the previous computation. This is designed specifically as an performance optimization for
-    methods called repeatedly during LBFGS, such as `loss` and `gradient`. LBFGS will call
-    `loss` and `gradient` as a pair, repeatedly. Typically `loss` and `gradient` share terms in
-    common (e.g. residuals or other affine transforms of theta), whose computation is somewhat
-    expensive and can be cached. However full memoization is unnecessary, as we are unlikely to
-    ever need a cached result again once the next LBFGS step starts. Hence we only keep the previous
-    result (letting `gradient` reuse the most expensive part of computing `loss`), while keeping memory
-    overhead minimal.
+    """Memoize the latest result.
+
+    Decorator for a Trainer method of the form `func(self, theta)`, which memoizes
+    the result of the previous computation. This is designed specifically as an
+    performance optimization for methods called repeatedly during LBFGS, such as
+    `loss` and `gradient`. LBFGS will call `loss` and `gradient` as a pair,
+    repeatedly. Typically `loss` and `gradient` share terms in common (e.g.
+    residuals or other affine transforms of theta), whose computation is somewhat
+    expensive and can be cached. However full memoization is unnecessary, as we
+    are unlikely to ever need a cached result again once the next LBFGS step starts.
+    Hence we only keep the previous result (letting `gradient` reuse the most
+    expensive part of computing `loss`), while keeping memory overhead minimal.
 
     :param func: a term computation method used in `loss` or `gradient` of the form func(self, theta).
     :return: prev-result memoized version of func.
