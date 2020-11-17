@@ -1,7 +1,6 @@
 """Data generation to be used in tests"""
 
 import json
-import logging
 import os
 import pathlib
 from typing import Any, Dict, List
@@ -9,11 +8,9 @@ from typing import Any, Dict, List
 import numpy as np
 from scipy import sparse
 
-from linkedin.lambdalearnerlib.ds.feature import Feature
-from linkedin.lambdalearnerlib.ds.indexed_dataset import IndexedDataset
-from linkedin.lambdalearnerlib.ds.record import TrainingRecord
-
-LOG = logging.getLogger(__name__)
+from linkedin.learner.ds.feature import Feature
+from linkedin.learner.ds.indexed_dataset import IndexedDataset
+from linkedin.learner.ds.record import TrainingRecord
 
 MOCK_NTV_DATASET_PATH = os.path.join(pathlib.Path(__file__).parent, "resource/mock-ntv-data-1k.json")
 
@@ -34,10 +31,11 @@ FEATURE_VALUE = "value"
 
 
 def read_ntv_records_from_json(num_examples: int = -1, data_path=MOCK_NTV_DATASET_PATH):
-    """
-    Read records from a file with one ntv json-formatted record per line.
-    :param data_path: path to file
-    :return: records
+    """Read records from a file with one ntv json-formatted record per line.
+
+    :param num_examples: How many records to load? -1 means no limit.
+    :param data_path: Path to data file.
+    :return: List of loaded records.
     """
     with open(data_path, "rb") as file:
         if num_examples > 0:
@@ -48,12 +46,22 @@ def read_ntv_records_from_json(num_examples: int = -1, data_path=MOCK_NTV_DATASE
 
 
 def read_model(file):
+    """Read an index-domain model file with one coefficient per line.
+
+    :param file: Path to model file.
+    :returns: NDArray of coefficients.
+    """
     with open(file, "r") as file:
         theta = [float(line) for line in file.readlines()]
     return np.array(theta)
 
 
 def read_tsv_data(file):
+    """"Read a tab-separated value file of index-domain data, with one record per line.
+
+    :param file: Path to data file.
+    :returns: IndexedDataset representing the loaded data.
+    """
     with open(file, "r") as file:
         example_list = [line.split("\t") for line in file.readlines()]
         num_examples = len(example_list)
@@ -86,10 +94,6 @@ def read_tsv_data(file):
 
             labels.append(y)
 
-        # Note: Why sparse and why CSC? CSR and CSC are better suited for linear algebra operations than DOK, DIA, LIL, etc.
-        # In practice, performance testing has revealed little difference between CSR and CSC representations for the sorts
-        # of operations lambda performs. However, sparse is considerably faster than dense for our typical data.
-        # See go/ll-matrix-performance.
         data = sparse.coo_matrix((values, (rows, cols)), shape=(num_examples, 1 + num_features), dtype=np.float64).tocsc()
 
         offsets = np.array(offsets, dtype=np.float64)
@@ -100,6 +104,10 @@ def read_tsv_data(file):
 
 
 def read_movie_lens_data():
+    """Read the movie lens data for testing.
+
+    :returns: Movie Lens training and test datasets.
+    """
     theta = read_model(MOVIE_LENS_INITIAL_MODEL_PATH)
     training_data = read_tsv_data(MOVIE_LENS_TRAINING_DATA_PATH)
     test_data = read_tsv_data(MOVIE_LENS_TEST_DATA_PATH)
@@ -111,30 +119,40 @@ def read_movie_lens_data():
 
 
 def read_expected_movie_lens_training_result():
+    """Read the expected movie lens training result (the trained model).
+
+    :returns: NDArray representing the loaded model.
+    """
     return read_model(MOVIE_LENS_EXPECTED_TRAINED_MODEL_PATH)
 
 
-def populate_features_from_avro_bag(features_avro: List[Any], feature_name_translation_map: Dict[str, str] = None) -> List[Feature]:
-    features = []
-    for feature_avro in features_avro:
-        name, term, value = feature_avro[FEATURE_NAME], feature_avro[FEATURE_TERM], feature_avro[FEATURE_VALUE]
+def features_from_json(features_json: List[Any], feature_name_translation_map: Dict[str, str] = None) -> List[Feature]:
+    """Convert a bag of json-like features to Feature format.
+
+    :param features_json: A list of features as parsed directly from json.
+    :param feature_name_translation_map: (Optional) Mapping for using different names internally.
+    :return: A list of Features.
+    """
+    feature_list = []
+    for feature in features_json:
+        name, term, value = feature[FEATURE_NAME], feature[FEATURE_TERM], feature[FEATURE_VALUE]
         if not feature_name_translation_map:
             # use all features as they are
-            features.append(Feature(name, term, value))
+            feature_list.append(Feature(name, term, value))
         elif name in feature_name_translation_map:
             # use a subset of features, possibly translated to a different name
             # otherwise we drop this feature and don't use it in retraining
             translated_feature_name = feature_name_translation_map[name]
-            features.append(Feature(translated_feature_name, term, value))
-    return features
+            feature_list.append(Feature(translated_feature_name, term, value))
+    return feature_list
 
 
-def from_offline_training_example_avro(record) -> TrainingRecord:
+def training_record_from_json(record_json) -> TrainingRecord:
+    """Convert a json-like record in TrainingRecord format.
+
+    :param record_json: A record as parsed directly from json.
+    :return: A TrainingRecord object.
     """
-    Parse an avro record in the TrainingExample format and construct a python object
-    :param record:
-    :return: a TrainingRecord object without feature indexing
-    """
-    features_avro = record[FEATURES]
-    features = populate_features_from_avro_bag(features_avro)
-    return TrainingRecord(label=record[OFFLINE_RESPONSE], weight=record[WEIGHT], offset=record[OFFSET], features=features)
+    features_json = record_json[FEATURES]
+    features = features_from_json(features_json)
+    return TrainingRecord(label=record_json[OFFLINE_RESPONSE], weight=record_json[WEIGHT], offset=record_json[OFFSET], features=features)

@@ -1,19 +1,26 @@
 import unittest
 
 import numpy as np
-
-from data_generation import read_expected_movie_lens_training_result, read_movie_lens_data
-from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
-from linkedin.lambdalearnerlib.prediction.evaluator import evaluate
-from linkedin.lambdalearnerlib.prediction.hessian_type import HessianType
-from linkedin.lambdalearnerlib.prediction.linear_scorer import score_linear_model
-from linkedin.lambdalearnerlib.prediction.trainer_square_loss_with_l2 import TrainerSquareLossWithL2
+from data_generation import (read_expected_movie_lens_training_result,
+                             read_movie_lens_data)
 from prediction.fixtures import simple_mock_data
 from test_utils import matrices_almost_equal, sequences_almost_equal
+
+from linkedin.learner.ds.indexed_model import IndexedModel
+from linkedin.learner.prediction.evaluator import evaluate
+from linkedin.learner.prediction.hessian_type import HessianType
+from linkedin.learner.prediction.linear_scorer import score_linear_model
+from linkedin.learner.prediction.trainer_square_loss_with_l2 import \
+    TrainerSquareLossWithL2
 
 
 class TrainerSquareLossWithL2Test(unittest.TestCase):
     def test_square_loss_with_l2_loss_and_gradient(self):
+        """Test the loss and gradient functions.
+
+        The expected values in this test are set using this implementation, so this
+        is a test against regression, rather than strictly a test of correctness.
+        """
         training_data, test_data = read_movie_lens_data()
 
         theta_0 = np.zeros(training_data.num_features)
@@ -38,10 +45,11 @@ class TrainerSquareLossWithL2Test(unittest.TestCase):
         )
 
     def test_square_loss_with_l2_update_hessian(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test the Hessian update."""
+        indexed_data, model = simple_mock_data()
 
         lr = TrainerSquareLossWithL2(training_data=indexed_data, initial_model=model, penalty=10, hessian_type=HessianType.FULL)
-        hessian = lr._update_full_hessian(theta)
+        hessian = lr._update_full_hessian(model.theta)
 
         expected_hessian = np.array(
             [

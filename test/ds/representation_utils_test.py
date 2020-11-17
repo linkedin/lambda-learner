@@ -4,16 +4,15 @@ from itertools import permutations
 import numpy as np
 from scipy import sparse
 
-from linkedin.lambdalearnerlib.ds.feature import Feature
-from linkedin.lambdalearnerlib.ds.index_map import IndexMap
-from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
-from linkedin.lambdalearnerlib.ds.record import TrainingRecord
-from linkedin.lambdalearnerlib.ds.representation_utils import (
+from linkedin.learner.ds.feature import Feature
+from linkedin.learner.ds.index_map import IndexMap
+from linkedin.learner.ds.indexed_model import IndexedModel
+from linkedin.learner.ds.record import TrainingRecord
+from linkedin.learner.ds.representation_utils import (
     index_domain_coeffs_to_nt_domain_coeffs,
     nt_domain_coeffs_to_index_domain_coeffs,
-    nt_domain_data_to_index_domain_data,
-)
-from linkedin.lambdalearnerlib.utils.functions import sparse_diag_matrix
+    nt_domain_data_to_index_domain_data)
+from linkedin.learner.utils.functions import sparse_diag_matrix
 
 
 class RepresentationUtilsTest(unittest.TestCase):

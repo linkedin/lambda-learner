@@ -1,8 +1,8 @@
 import unittest
 
-from linkedin.lambdalearnerlib.ds.feature import Feature
-from linkedin.lambdalearnerlib.ds.index_map import IndexMap
-from linkedin.lambdalearnerlib.ds.record import TrainingRecord
+from linkedin.learner.ds.feature import Feature
+from linkedin.learner.ds.index_map import IndexMap
+from linkedin.learner.ds.record import TrainingRecord
 
 
 class IndexMapTest(unittest.TestCase):

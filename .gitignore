@@ -35,10 +35,9 @@
 /ligradle/
 TEST-*.xml
 __pycache__/
+.DS_Store
 
 
-
-# Added by mp-maker
 build
 /*/config
 .shelf

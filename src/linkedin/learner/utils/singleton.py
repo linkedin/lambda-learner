@@ -2,8 +2,7 @@ from typing import Dict
 
 
 class Singleton(type):
-    """
-    A Metaclass for building singleton classes.
+    """A Metaclass for building singleton classes.
 
     Usage:
     class MySingletonClass(metaclass=Singleton):

@@ -1,20 +1,25 @@
 import unittest
 
 import numpy as np
-
-from linkedin.lambdalearnerlib.ds.indexed_model import IndexedModel
-from linkedin.lambdalearnerlib.prediction.evaluator import evaluate
-from linkedin.lambdalearnerlib.prediction.hessian_type import HessianType
-from linkedin.lambdalearnerlib.prediction.linear_scorer import score_linear_model
-from linkedin.lambdalearnerlib.prediction.trainer_sequential_bayesian_logistic_loss_with_l2 import (
-    TrainerSequentialBayesianLogisticLossWithL2,
-)
 from prediction.fixtures import generate_mock_training_data, simple_mock_data
-from test_utils import PLACES_PRECISION, matrices_almost_equal, sequences_almost_equal
+from test_utils import (PLACES_PRECISION, matrices_almost_equal,
+                        sequences_almost_equal)
+
+from linkedin.learner.ds.indexed_model import IndexedModel
+from linkedin.learner.prediction.evaluator import evaluate
+from linkedin.learner.prediction.hessian_type import HessianType
+from linkedin.learner.prediction.linear_scorer import score_linear_model
+from linkedin.learner.prediction.trainer_sequential_bayesian_logistic_loss_with_l2 import \
+    TrainerSequentialBayesianLogisticLossWithL2
 
 
 class TrainerSequentialBayesianLogisticLossWithL2Test(unittest.TestCase):
     def test_incremental_lr_loss_and_gradient(self):
+        """Test the loss and gradient functions.
+
+        The expected values in this test are set using this implementation, so this
+        is a test against regression, rather than strictly a test of correctness.
+        """
         indexed_data, _ = generate_mock_training_data()
 
         theta_0 = np.array([4, 100, 1, 1, 1, 1, 1, 1, 1, 1], dtype=np.float64)
@@ -78,37 +83,40 @@ class TrainerSequentialBayesianLogisticLossWithL2Test(unittest.TestCase):
         )
 
     def test_incremental_lr_update_hessian(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test the Hessian update when using a full Hessian."""
+        indexed_data, model = simple_mock_data()
         lr = TrainerSequentialBayesianLogisticLossWithL2(
             training_data=indexed_data, initial_model=model, hessian_type=HessianType.FULL, penalty=10, delta=1.0
         )
-        hessian = lr._update_hessian(theta)
+        hessian = lr._update_hessian(model.theta)
         expected_hessian = np.array(
             [[1.076006603, 0.007826689, 0.167666585], [0.007826689, 1.003913344, 0.023480067], [0.167666585, 0.023480067, 1.382293306]]
         )
         self.assertTrue(
             matrices_almost_equal(hessian, expected_hessian),
-            f"(Full) hessian computation is correct. Actual {hessian} == Expected {expected_hessian}.",
+            f"(Full) Hessian computation is correct. Actual {hessian} == Expected {expected_hessian}.",
         )
 
     def test_incremental_lr_update_hessian_diagonal(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test the Hessian update when using a diagonal Hessian."""
+        indexed_data, model = simple_mock_data()
         lr = TrainerSequentialBayesianLogisticLossWithL2(
             training_data=indexed_data, initial_model=model, hessian_type=HessianType.DIAGONAL, penalty=10, delta=1.0
         )
-        hessian = lr._update_hessian(theta).toarray()
+        hessian = lr._update_hessian(model.theta).toarray()
         expected_hessian = np.diag([1.076006603, 1.003913344, 1.382293306])
         self.assertTrue(
             matrices_almost_equal(hessian, expected_hessian),
-            f"(Diagonal) hessian computation is correct. Actual {hessian} == Expected {expected_hessian}.",
+            f"(Diagonal) Hessian computation is correct. Actual {hessian} == Expected {expected_hessian}.",
         )
 
     def test_incremental_lr_update_hessian_identity(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test the Hessian update when using an identity Hessian."""
+        indexed_data, model = simple_mock_data()
         lr = TrainerSequentialBayesianLogisticLossWithL2(
             training_data=indexed_data, initial_model=model, hessian_type=HessianType.IDENTITY, penalty=10, delta=1.0
         )
-        hessian = lr._update_hessian(theta).toarray()
+        hessian = lr._update_hessian(model.theta).toarray()
         expected_hessian = np.diag([1.0, 1.0, 1.0])
         self.assertTrue(
             matrices_almost_equal(hessian, expected_hessian),
@@ -116,7 +124,8 @@ class TrainerSequentialBayesianLogisticLossWithL2Test(unittest.TestCase):
         )
 
     def test_hessian_computation_is_optional(self):
-        indexed_data, model, theta = simple_mock_data()
+        """Test that the Hessian update is optional."""
+        indexed_data, model = simple_mock_data()
 
         trainer = TrainerSequentialBayesianLogisticLossWithL2(
             training_data=indexed_data, initial_model=model, penalty=10, hessian_type=HessianType.NONE
