@@ -1,22 +1,31 @@
 from os import path
 from setuptools import find_namespace_packages, setup
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='lambda-learner',
+    namespace_packages=['linkedin'],
+    version='0.0.1',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    classifiers=["Programming Language :: Python :: 3.7",
-                 "Intended Audience :: Science/Research",
-                 "Intended Audience :: Developers",
-                 "License :: OSI Approved"],
+    classifiers=['Programming Language :: Python :: 3',
+                 'Intended Audience :: Science/Research',
+                 'Intended Audience :: Developers',
+                 'License :: OSI Approved'],
     license='BSD-2-CLAUSE',
-    version='0.0.1',
+    keywords='lambda-learner incremental training',
     package_dir={'': 'src'},
-    packages=find_namespace_packages(where='src'),
+    packages=find_namespace_packages(where='src', exclude=['test*', 'doc']),
+    url='https://github.com/linkedin/lambda-learner',
+    project_urls={
+        'Documentation': 'https://github.com/linkedin/lambda-learner/blob/main/README.md',
+        'Source': 'https://github.com/linkedin/lambda-learner',
+        'Tracker': 'https://github.com/linkedin/lambda-learner/issues',
+    },
     include_package_data=True,
+    python_requires='>=3.6',
     install_requires=[
         'numpy >= 1.14',
         'scipy >= 1.0.0',

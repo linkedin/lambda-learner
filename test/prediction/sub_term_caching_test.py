@@ -15,7 +15,6 @@ class SubTermMemoizationFixture:
     same instance, and only if the previously computed result was cached and
     the uuid computation is bypassed.
     """
-
     def target_op(self, x: np.ndarray):
         return hash(self), uuid.uuid1()
 
