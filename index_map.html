@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module index_map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>index_map</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/ds/index_map.py">/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/ds/index_map.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="index_map.html#IndexMap">IndexMap</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="IndexMap">class <strong>IndexMap</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;mapping&nbsp;from&nbsp;a&nbsp;human&nbsp;readable&nbsp;feature&nbsp;domain&nbsp;to&nbsp;an&nbsp;indexed&nbsp;numeric&nbsp;feature&nbsp;domain.<br>
+&nbsp;<br>
+An&nbsp;<a href="#IndexMap">IndexMap</a>&nbsp;is&nbsp;used&nbsp;to&nbsp;translate&nbsp;human-readable&nbsp;model&nbsp;and&nbsp;data&nbsp;representations<br>
+into&nbsp;the&nbsp;IndexedModel&nbsp;and&nbsp;IndexedDataset&nbsp;representations&nbsp;use&nbsp;for&nbsp;optimization.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="IndexMap-__init__"><strong>__init__</strong></a>(self, intercept_name='intercept', intercept_term='intercept')</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="IndexMap-__len__"><strong>__len__</strong></a>(self) -&gt; int</dt></dl>
+
+<dl><dt><a name="IndexMap-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="IndexMap-batch_push"><strong>batch_push</strong></a>(self, name_terms:Iterable[Tuple[str, str]]) -&gt; Tuple[int, int]</dt><dd><tt>Add&nbsp;multiple&nbsp;terms&nbsp;to&nbsp;the&nbsp;index&nbsp;map,&nbsp;ignoring&nbsp;those&nbsp;already&nbsp;indexed.<br>
+&nbsp;<br>
+Also&nbsp;return&nbsp;some&nbsp;metadata&nbsp;about&nbsp;how&nbsp;many&nbsp;were&nbsp;actually&nbsp;added.<br>
+&nbsp;<br>
+:param&nbsp;name_terms:&nbsp;Multiple&nbsp;terms&nbsp;to&nbsp;try&nbsp;to&nbsp;index.<br>
+:return:&nbsp;Number&nbsp;of&nbsp;terms&nbsp;added;&nbsp;and&nbsp;number&nbsp;of&nbsp;distinct&nbsp;terms&nbsp;it&nbsp;tried&nbsp;to&nbsp;add.</tt></dd></dl>
+
+<dl><dt><a name="IndexMap-get_index"><strong>get_index</strong></a>(self, name_term:Tuple[str, str]) -&gt; int</dt><dd><tt>Look&nbsp;up&nbsp;the&nbsp;index&nbsp;for&nbsp;the&nbsp;given&nbsp;term.<br>
+&nbsp;<br>
+This&nbsp;raised&nbsp;an&nbsp;IndexError&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;an&nbsp;unindexed&nbsp;term.<br>
+&nbsp;<br>
+:param&nbsp;name_term:&nbsp;The&nbsp;term&nbsp;for&nbsp;which&nbsp;to&nbsp;look&nbsp;up&nbsp;the&nbsp;corresponding&nbsp;index.<br>
+:return:&nbsp;The&nbsp;index,&nbsp;if&nbsp;it&nbsp;exists.</tt></dd></dl>
+
+<dl><dt><a name="IndexMap-get_nt"><strong>get_nt</strong></a>(self, index:int) -&gt; Tuple[str, str]</dt><dd><tt>Look&nbsp;up&nbsp;a&nbsp;term&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;index.<br>
+&nbsp;<br>
+This&nbsp;raised&nbsp;an&nbsp;IndexError&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;an&nbsp;out-of-bounds&nbsp;index.<br>
+&nbsp;<br>
+:param&nbsp;index:&nbsp;The&nbsp;index&nbsp;for&nbsp;which&nbsp;to&nbsp;look&nbsp;up&nbsp;the&nbsp;corresponding&nbsp;term.<br>
+:return:&nbsp;The&nbsp;term,&nbsp;if&nbsp;is&nbsp;has&nbsp;been&nbsp;indexed.</tt></dd></dl>
+
+<dl><dt><a name="IndexMap-push"><strong>push</strong></a>(self, name_term:Tuple[str, str])</dt><dd><tt>Add&nbsp;one&nbsp;term&nbsp;to&nbsp;the&nbsp;index&nbsp;map.&nbsp;No-op&nbsp;if&nbsp;the&nbsp;term&nbsp;is&nbsp;already&nbsp;present.<br>
+&nbsp;<br>
+NOT&nbsp;THREAD&nbsp;SAFE.&nbsp;This&nbsp;class&nbsp;is&nbsp;not&nbsp;thread&nbsp;safe&nbsp;and&nbsp;may&nbsp;not&nbsp;work&nbsp;correctly<br>
+if&nbsp;shared&nbsp;for&nbsp;the&nbsp;training&nbsp;of&nbsp;multiple&nbsp;models,&nbsp;with&nbsp;features&nbsp;iteratively<br>
+indexed&nbsp;during&nbsp;processing&nbsp;of&nbsp;different&nbsp;stream&nbsp;windows.&nbsp;If&nbsp;sharing&nbsp;and<br>
+iterative&nbsp;indexing&nbsp;is&nbsp;desired&nbsp;in&nbsp;future,&nbsp;`push`&nbsp;and&nbsp;`batch_push`&nbsp;should<br>
+be&nbsp;made&nbsp;atomic&nbsp;(instance-level&nbsp;lock).<br>
+&nbsp;<br>
+:param&nbsp;name_term:&nbsp;The&nbsp;term&nbsp;to&nbsp;add.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="IndexMap-from_records_means_and_variances"><strong>from_records_means_and_variances</strong></a>(training_records:Iterable[linkedin.learner.ds.record.TrainingRecord], coefficient_mean:Iterable[linkedin.learner.ds.feature.Feature], coefficient_vars:Iterable[linkedin.learner.ds.feature.Feature]) -&gt; Tuple[_ForwardRef('IndexMap'), Dict]</dt><dd><tt>Build&nbsp;an&nbsp;index&nbsp;map&nbsp;for&nbsp;given&nbsp;training&nbsp;data&nbsp;and&nbsp;coefficients.<br>
+&nbsp;<br>
+:param&nbsp;training_records:&nbsp;Training&nbsp;data.<br>
+:param&nbsp;coefficient_mean:&nbsp;Model&nbsp;coefficient&nbsp;means.<br>
+:param&nbsp;coefficient_vars:&nbsp;Model&nbsp;coefficient&nbsp;variances.<br>
+:return:&nbsp;An&nbsp;index&nbsp;map&nbsp;which&nbsp;can&nbsp;be&nbsp;used&nbsp;for&nbsp;translating&nbsp;the&nbsp;above<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;and&nbsp;model&nbsp;between&nbsp;the&nbsp;name&nbsp;term&nbsp;and&nbsp;index-domains.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>intercept_index</strong></dt>
+</dl>
+<dl><dt><strong>intercept_nt</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>INDEX_MAP_REPR_SEPARATOR</strong> = '; '</td></tr></table>
+</body></html>

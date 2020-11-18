@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module singleton</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>singleton</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/utils/singleton.py">/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/utils/singleton.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#type">builtins.type</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="singleton.html#Singleton">Singleton</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Singleton">class <strong>Singleton</strong></a>(<a href="builtins.html#type">builtins.type</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;Metaclass&nbsp;for&nbsp;building&nbsp;singleton&nbsp;classes.<br>
+&nbsp;<br>
+Usage:<br>
+class&nbsp;MySingletonClass(metaclass=<a href="#Singleton">Singleton</a>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pass<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="singleton.html#Singleton">Singleton</a></dd>
+<dd><a href="builtins.html#type">builtins.type</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Singleton-__call__"><strong>__call__</strong></a>(klass, *args, **kwargs)</dt><dd><tt>Call&nbsp;self&nbsp;as&nbsp;a&nbsp;function.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'_instances': typing.Dict[object, object]}</dl>
+
+<hr>
+Methods inherited from <a href="builtins.html#type">builtins.type</a>:<br>
+<dl><dt><a name="Singleton-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__dir__"><strong>__dir__</strong></a>(...)</dt><dd><tt><a href="#Singleton-__dir__">__dir__</a>()&nbsp;-&gt;&nbsp;list<br>
+specialized&nbsp;__dir__&nbsp;implementation&nbsp;for&nbsp;types</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(<a href="builtins.html#type">type</a>(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__instancecheck__"><strong>__instancecheck__</strong></a>(...)</dt><dd><tt><a href="#Singleton-__instancecheck__">__instancecheck__</a>()&nbsp;-&gt;&nbsp;bool<br>
+check&nbsp;if&nbsp;an&nbsp;object&nbsp;is&nbsp;an&nbsp;instance</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(<a href="builtins.html#type">type</a>)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__prepare__"><strong>__prepare__</strong></a>(...)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt><a href="#Singleton-__prepare__">__prepare__</a>()&nbsp;-&gt;&nbsp;dict<br>
+used&nbsp;to&nbsp;create&nbsp;the&nbsp;namespace&nbsp;for&nbsp;the&nbsp;class&nbsp;statement</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt><dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__sizeof__"><strong>__sizeof__</strong></a>(...)</dt><dd><tt><a href="#Singleton-__sizeof__">__sizeof__</a>()&nbsp;-&gt;&nbsp;int<br>
+return&nbsp;memory&nbsp;consumption&nbsp;of&nbsp;the&nbsp;<a href="builtins.html#type">type</a>&nbsp;object</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__subclasscheck__"><strong>__subclasscheck__</strong></a>(...)</dt><dd><tt><a href="#Singleton-__subclasscheck__">__subclasscheck__</a>()&nbsp;-&gt;&nbsp;bool<br>
+check&nbsp;if&nbsp;a&nbsp;class&nbsp;is&nbsp;a&nbsp;subclass</tt></dd></dl>
+
+<dl><dt><a name="Singleton-__subclasses__"><strong>__subclasses__</strong></a>(...)</dt><dd><tt><a href="#Singleton-__subclasses__">__subclasses__</a>()&nbsp;-&gt;&nbsp;list&nbsp;of&nbsp;immediate&nbsp;subclasses</tt></dd></dl>
+
+<dl><dt><a name="Singleton-mro"><strong>mro</strong></a>(...)</dt><dd><tt><a href="#Singleton-mro">mro</a>()&nbsp;-&gt;&nbsp;list<br>
+return&nbsp;a&nbsp;<a href="builtins.html#type">type</a>'s&nbsp;method&nbsp;resolution&nbsp;order</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="builtins.html#type">builtins.type</a>:<br>
+<dl><dt><strong>__abstractmethods__</strong></dt>
+</dl>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>__text_signature__</strong></dt>
+</dl>
+<hr>
+Data and other attributes inherited from <a href="builtins.html#type">builtins.type</a>:<br>
+<dl><dt><strong>__base__</strong> = &lt;class 'type'&gt;<dd><tt><a href="builtins.html#type">type</a>(object_or_name,&nbsp;bases,&nbsp;dict)<br>
+<a href="builtins.html#type">type</a>(object)&nbsp;-&gt;&nbsp;the&nbsp;object's&nbsp;<a href="builtins.html#type">type</a><br>
+<a href="builtins.html#type">type</a>(name,&nbsp;bases,&nbsp;dict)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#type">type</a></tt></dl>
+
+<dl><dt><strong>__bases__</strong> = (&lt;class 'type'&gt;,)</dl>
+
+<dl><dt><strong>__basicsize__</strong> = 864</dl>
+
+<dl><dt><strong>__dictoffset__</strong> = 264</dl>
+
+<dl><dt><strong>__flags__</strong> = 2148292097</dl>
+
+<dl><dt><strong>__itemsize__</strong> = 40</dl>
+
+<dl><dt><strong>__mro__</strong> = (&lt;class 'singleton.Singleton'&gt;, &lt;class 'type'&gt;, &lt;class 'object'&gt;)</dl>
+
+<dl><dt><strong>__weakrefoffset__</strong> = 368</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

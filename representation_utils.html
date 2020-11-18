@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module representation_utils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>representation_utils</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/ds/representation_utils.py">/Users/ktalanin/IdeaProjects/lambda-learner/src/linkedin/learner/ds/representation_utils.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="scipy.sparse.html">scipy.sparse</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-index_domain_coeffs_to_nt_domain_coeffs"><strong>index_domain_coeffs_to_nt_domain_coeffs</strong></a>(model:linkedin.learner.ds.indexed_model.IndexedModel, index_map:linkedin.learner.ds.index_map.IndexMap) -&gt; Tuple[Dict[Tuple[str, str], float], Union[Dict[Tuple[str, str], float], NoneType]]</dt><dd><tt>Transform&nbsp;an&nbsp;index&nbsp;domain&nbsp;model&nbsp;into&nbsp;a&nbsp;name-term&nbsp;domain&nbsp;model.<br>
+&nbsp;<br>
+Transform&nbsp;an&nbsp;IndexedModel&nbsp;into&nbsp;dictionaries&nbsp;from&nbsp;name-terms&nbsp;to&nbsp;values&nbsp;for<br>
+the&nbsp;coefficient&nbsp;means&nbsp;and&nbsp;variances,&nbsp;using&nbsp;the&nbsp;provided&nbsp;IndexMap&nbsp;to&nbsp;define<br>
+the&nbsp;translation&nbsp;from&nbsp;the&nbsp;index&nbsp;domain&nbsp;to&nbsp;the&nbsp;name-term&nbsp;domain.<br>
+&nbsp;<br>
+:param&nbsp;model:&nbsp;The&nbsp;index&nbsp;domain&nbsp;model&nbsp;(holding&nbsp;coefficient&nbsp;means&nbsp;and&nbsp;variances).<br>
+:param&nbsp;index_map:&nbsp;The&nbsp;index&nbsp;map&nbsp;previously&nbsp;used&nbsp;to&nbsp;index&nbsp;the&nbsp;model&nbsp;and&nbsp;data.<br>
+:return:&nbsp;Coefficient&nbsp;means&nbsp;and&nbsp;variances&nbsp;as&nbsp;name-term&nbsp;-&gt;&nbsp;value&nbsp;dicts.</tt></dd></dl>
+ <dl><dt><a name="-nt_domain_coeffs_to_index_domain_coeffs"><strong>nt_domain_coeffs_to_index_domain_coeffs</strong></a>(coeff_means:List[linkedin.learner.ds.feature.Feature], coeff_variances:List[linkedin.learner.ds.feature.Feature], index_map:linkedin.learner.ds.index_map.IndexMap, regularization_param:float) -&gt; linkedin.learner.ds.indexed_model.IndexedModel</dt><dd><tt>Transform&nbsp;a&nbsp;name-term&nbsp;domain&nbsp;model&nbsp;into&nbsp;an&nbsp;index&nbsp;domain&nbsp;model.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;uses&nbsp;the&nbsp;given&nbsp;IndexMap&nbsp;to&nbsp;transform&nbsp;a&nbsp;model&nbsp;representation<br>
+from&nbsp;the&nbsp;human-readable&nbsp;name-term&nbsp;domain,&nbsp;into&nbsp;the&nbsp;vectorized&nbsp;index&nbsp;domain<br>
+appropriate&nbsp;for&nbsp;optimization.<br>
+&nbsp;<br>
+:param&nbsp;coeff_means:&nbsp;Coefficient&nbsp;means.<br>
+:param&nbsp;coeff_variances:&nbsp;Coefficient&nbsp;variances.<br>
+:param&nbsp;index_map:&nbsp;Index&nbsp;map&nbsp;defining&nbsp;the&nbsp;name-term&nbsp;to&nbsp;index&nbsp;mapping.<br>
+:param&nbsp;regularization_param:&nbsp;The&nbsp;regularization&nbsp;parameter&nbsp;used&nbsp;for&nbsp;training.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Needed&nbsp;to&nbsp;initialize&nbsp;Hessian&nbsp;values&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;coefficients&nbsp;are&nbsp;missing&nbsp;in&nbsp;the&nbsp;model.<br>
+:return:&nbsp;An&nbsp;IndexedModel,&nbsp;representing&nbsp;the&nbsp;model&nbsp;coefficients&nbsp;in&nbsp;the&nbsp;index<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;domain,&nbsp;suitable&nbsp;for&nbsp;efficient&nbsp;training&nbsp;or&nbsp;scoring.</tt></dd></dl>
+ <dl><dt><a name="-nt_domain_data_to_index_domain_data"><strong>nt_domain_data_to_index_domain_data</strong></a>(records:List[linkedin.learner.ds.record.TrainingRecord], index_map:linkedin.learner.ds.index_map.IndexMap) -&gt; linkedin.learner.ds.indexed_dataset.IndexedDataset</dt><dd><tt>Transforms&nbsp;a&nbsp;dataset&nbsp;from&nbsp;name-term&nbsp;to&nbsp;index&nbsp;domain&nbsp;representations.<br>
+&nbsp;<br>
+:param&nbsp;records:&nbsp;A&nbsp;dataset&nbsp;for&nbsp;training/scoring<br>
+:param&nbsp;index_map:&nbsp;An&nbsp;index&nbsp;map&nbsp;defining&nbsp;the&nbsp;name-term&nbsp;to&nbsp;index&nbsp;mapping.<br>
+&nbsp;<br>
+:return:&nbsp;A&nbsp;representation&nbsp;of&nbsp;the&nbsp;data&nbsp;in&nbsp;the&nbsp;index&nbsp;domain,&nbsp;suitable&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;efficient&nbsp;training&nbsp;or&nbsp;scoring.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Optional</strong> = typing.Optional</td></tr></table>
+</body></html>
