@@ -14,7 +14,7 @@ Responsible Disclosure of Security Vulnerabilities
 the [guidelines for disclosure][disclosure_guidelines].  Reports should
 be encrypted using PGP ([public key][pubkey]) and sent to
 [security@linkedin.com][disclosure_email] preferably with the title
-"Vulnerability in Github LinkedIn/GDMix - &lt;short summary&gt;".
+"Vulnerability in Github LinkedIn/lambda-learner - &lt;short summary&gt;".
 
 Tips for Getting Your Pull Request Accepted
 ===========================================
