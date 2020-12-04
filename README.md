@@ -2,20 +2,22 @@
 
 ## What is it
 
-Lambda Learner is a library for iterative training of a class of supervised machine learning models called Generalized Additive Mixed-Effect (GAME) models. The library supports incremental updates to the random effects components of a GAME model in response to mini-batches from data streams. Currently the following algorithms for updating a random effect are supported:
+Lambda Learner is a library for iterative incremental training of a class of supervised machine learning models. Using the Generalized Additive Mixed-Effect (GAME) framework, one can divde a model into two components, (a) Fixed effects - a typically large fixed-effects model (generalization) that is trained on the whole dataset to improve the model’s performance on previously unseen user-item pairs, and (b) Random effects - a series of simpler linear random-effects models (memorization) trained on data corresponding to each entity (e.g. user or article or ad) for more granular personalization. 
+
+Typically, the fixed effects is modeled using [Tensorflow](https://github.com/tensorflow/tensorflow), [DeText](https://github.com/linkedin/detext), [GDMix](https://github.com/linkedin/gdmix), [XGBoost](https://github.com/dmlc/xgboost) and the residualy score coming from this model is boosted using a random effect linear model. The library supports incremental updates to the random effects components of a GAME model in response to mini-batches from data streams. Currently the following algorithms for updating a random effect are supported:
 
 - Linear regression.
 - Logistic regression.
 - Sequential Bayesian logistic regression (as described in the [Lambda Learner paper](https://arxiv.org/abs/2010.05154)).
 
-The library supports maintaining a model coefficient Hessian matrix, representing uncertainty about model coefficient values, in addition to point estimates of the coefficients. This allows techniques such as Thompson Sampling to be used during model serving.
+The library supports maintaining a model coefficient Hessian matrix, representing uncertainty about model coefficient values, in addition to point estimates of the coefficients. This allows us to use the random effect as a multi-armed bandit using techniques such as Thompson Sampling.
 
 
 ## Why Lambda Learner
 
 One of the most well-established applications of machine learning is in deciding what content to show website visitors. When observation data comes from high-velocity, user-generated data streams, machine learning methods perform a balancing act between model complexity, training time, and computational costs. Furthermore, when model freshness is critical, the training of models becomes time-constrained. Parallelized batch offline training, although horizontally scalable, is often not time-considerate or cost effective.
 
-Lambda Learner is capable of incrementally training the memorization part of the model (the random-effects components) as a booster over the generalization part. The frequent updates it brings can improve business metrics.
+Lambda Learner is capable of incrementally training the memorization part of the model (the random-effects components) as a booster over the generalization part. The frequent updates to these booster models over already powerful fixed-effect models improve personalization. Additionally, it allows for applications that require online bandits that are updated quickly.
 
 In the GAME paradigm, random effects components can be trained independently of each other. This means that their update can be easily parallelized across nodes in a distributed computation framework. For example, this library can be used on top of Python Beam or PySpark. The distributed compute framework is used for parallelization and data orchestration, while the Lambda Learner library implements the update of random effects in individual compute tasks (DoFns in Beam or Task closures in PySpark).
 
@@ -30,7 +32,7 @@ pip install lambda-learner
 
 ### Prepare your dataset and initial model
 
-Let's assume we have a minibatch of data and a random effect model, and a global model (the fixed effects). In order to use Lambda Learner, we need to format the data and model into appropriate data structures as follows:
+Let's assume we have a minibatch of data, a random effect model, and the fixed effects. In order to use Lambda Learner, we need to format the data and model into appropriate data structures as follows:
 
 ```python
 training_data: List[TrainingRecord] = ...
@@ -43,9 +45,9 @@ A `TrainingRecord` represents a labeled example. The most important fields in th
 
 - `label` => The datum label. For example, this could be binarized (0.0, or 1.0) for a classification task, or in the range [0.0,1.0] for a regression task.
 - `features` => A list of `Feature`s. `Feature` is a Name-Term-Value representation which we'll discuss next.
-- `offset` => The score that the associated global fixed-effects model produces for this datum. This represents all relevant information about the global model on top of which the random-effect component we are about to train is an adjustment.
+- `offset` => The score that the associated fixed-effects model produces for this datum. The score from a deep or non-linear fixed-effect model is captured in just one parameter. We use this score as the residual to train the random-effect models.
 
-Both training data features and model coefficients are represented using the `Feature` class. `Feature` is a Name-Term-Value (NTV) representation, where the name is the feature name, the term is a string index for the feature (supporting categorical and numerical vector features), and the value is the numerical value corresponding to a name-term pair. When a `Feature` is used to describe a model, the value is the coefficient weight.
+Both features (from the training data) and model coefficients are represented using the `Feature` class. `Feature` is a Name-Term-Value (NTV) representation, where the name is the feature name, the term is a string index for the feature (supporting categorical and numerical vector features), and the value is the numerical value corresponding to a name-term pair. When a `Feature` is used to describe a model, the value is the coefficient weight.
 
 Here's a toy example of data and a model using single feature: a categorical representing a user's favorite the season of the year. In actual practice, you would create these data structures by reading in external resources and wrangling them into this form.
 
@@ -78,12 +80,11 @@ model_coefficients = [
 ]
 ```
 
-In future, other storage formats besides NTV may be supported.
+In the future, other storage formats besides NTV may be supported.
 
 ### Create an index map
 
-NTV is a very human-readable format for representing the model coefficients and data record features. However, in order to train the model, we need to transform both the model data into
-an indexed, vector representation. An `IndexMap` is a mapping between a Name-Term and an integer index, which we use to translate from the human-readable NTV representation to an trainable indexed representation.
+NTV is a very human-readable format for representing the model coefficients and data record features. However, in order to train the model, we need to transform both the model data into an indexed, vector representation. An `IndexMap` is a mapping between a Name-Term and an integer index, which we use to translate from the human-readable NTV representation to an trainable indexed representation.
 
 ```python
 index_map, index_map_metadata = IndexMap.from_records_means_and_variances(
@@ -124,7 +125,7 @@ lr_trainer = TrainerSequentialBayesianLogisticLossWithL2(
 updated_model, updated_model_loss, training_metadata = lr_trainer.train()
 ```
 
-`training_metadata` contains the metadata returned by the scipy `fmin_l_bfgs_b` optimizer, which be logged or used when debugging. See: https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html
+`training_metadata` contains the metadata returned by the scipy `fmin_l_bfgs_b` optimizer, which be logged or used when debugging. See [Scipy docs](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html) for more information.
 
 `updated_model` is an `IndexedModel` which is the result or this minibatch training iteration.
 
@@ -149,6 +150,20 @@ means, variances = index_domain_coeffs_to_nt_domain_coeffs(updated_model, index_
 
 `means` and `variances` represent the updated model coefficients and their variances. These can now be stored and subsequently used for inference or further updated on the next data minibatch.
 
+## Citing
+
+Please cite Lambda Learner in your publications if it helps your research:
+
+```
+@misc{ramanath2020lambda,
+      title={Lambda Learner: Fast Incremental Learning on Data Streams}, 
+      author={Rohan Ramanath and Konstantin Salomatin and Jeffrey D. Gee and Kirill Talanine and Onkar Dalal and Gungor Polatkan and Sara Smoot and Deepak Kumar},
+      year={2020},
+      eprint={2010.05154},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
 
 ## Contributing
 
