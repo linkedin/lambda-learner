@@ -7,7 +7,7 @@ with open('README.md', encoding='utf-8') as f:
 setup(
     name='lambda-learner',
     namespace_packages=['linkedin'],
-    version='0.0.1',
+    version='0.1.0',
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=['Programming Language :: Python :: 3',
@@ -27,9 +27,9 @@ setup(
     include_package_data=True,
     python_requires='>=3.6',
     install_requires=[
-        'numpy >= 1.14',
-        'scipy >= 1.0.0',
-        'scikit-learn >= 0.18.1',
+        'numpy >= 1.19.4',
+        'scipy >= 1.5.4',
+        'scikit-learn >= 0.24.0',
         'typing-extensions >= 3.7.4',
     ],
     tests_require=[
