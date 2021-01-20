@@ -23,3 +23,10 @@ def matrices_almost_equal(a, b, rel_precision: float = RELATIVE_PRECISION):
     """
     zero_adjustment = ((b == 0) + 0) * (rel_precision / 1000)
     return all((np.array(abs(1 - (a + zero_adjustment) / (b + zero_adjustment)) < rel_precision)).flatten())
+
+
+def ensure_str(bytes_or_str, encoding: str = "utf-8"):
+    """
+    Ensures that an object which is either a string or bytes is treated as a string.
+    """
+    return str(bytes_or_str, encoding) if isinstance(bytes_or_str, bytes) else bytes_or_str

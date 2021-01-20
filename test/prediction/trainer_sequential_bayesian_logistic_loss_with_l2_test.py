@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from prediction.fixtures import generate_mock_training_data, simple_mock_data
 from test_utils import (PLACES_PRECISION, matrices_almost_equal,
-                        sequences_almost_equal)
+                        sequences_almost_equal, ensure_str)
 
 from linkedin.learner.ds.indexed_model import IndexedModel
 from linkedin.learner.prediction.evaluator import evaluate
@@ -64,7 +64,7 @@ class TrainerSequentialBayesianLogisticLossWithL2Test(unittest.TestCase):
         self.assertEqual(metadata["warnflag"], 0, "Expect convergence status is 0, meaning successful convergence.")
         self.assertEqual(metadata["nit"], 20, "Expect number of iterations is correct.")
         self.assertEqual(metadata["funcalls"], 28, "Expect number of function calls is correct.")
-        self.assertEqual(metadata["task"], b"CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH", f"Expect convergence reason is as expected")
+        self.assertEqual(ensure_str(metadata["task"]), "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH", f"Expect convergence reason is as expected")
 
         # Score (on the training data)
         initial_scores = score_linear_model(model=initial_model, test_data=indexed_data)
