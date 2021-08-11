@@ -1,5 +1,8 @@
 # Lambda Learner
 
+<div style="display: flex; justify-content: center; width: 100%">
+    <img src="https://raw.githubusercontent.com/linkedin/lambda-learner/main/ll_logo.jpeg" alt="Lambda Learner project logo" style="width:300px;"/>
+</div>
 ## What is it
 
 Lambda Learner is a library for iterative incremental training of a class of supervised machine learning models. Using the Generalized Additive Mixed-Effect (GAME) framework, one can divide a model into two components, (a) Fixed Effects - a typically large "fixed effects" model (generalization) that is trained on the whole dataset to improve the model’s performance on previously unseen user-item pairs, and (b) Random Effects - a series of simpler linear "random-effects" models (memorization) trained on data corresponding to each entity (e.g. user or article or ad) for more granular personalization.
